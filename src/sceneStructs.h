@@ -9,6 +9,13 @@
 
 #define BACKGROUND_COLOR (glm::vec3(0.0f))
 
+// Material types
+#define DIFFUSE    1
+#define SPECULAR   2
+#define EMIT       3
+#define TRANS      4
+#define GLASS      5
+
 enum GeomType
 {
     SPHERE,
@@ -35,6 +42,7 @@ struct Geom
 
 struct Material
 {
+    int type;
     glm::vec3 color;
     struct
     {
@@ -74,6 +82,7 @@ struct PathSegment
     glm::vec3 color;
     int pixelIndex;
     int remainingBounces;
+    int intersectIndex;
 };
 
 // Use with a corresponding PathSegment to do:
