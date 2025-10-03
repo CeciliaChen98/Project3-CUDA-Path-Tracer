@@ -89,7 +89,7 @@ Implements a physically-based aperture model:
 
 *The following images are all generated with lens of radius = 0.5.*
 
-<div align="center">
+<p align="center">
   <figure style="display:inline-block; margin:0 1%; width:45%;">
     <img src="img/no_dof.png" style="width:100%;">
     <figcaption style="text-align:center; font-style:italic; margin-top:6px;">
@@ -102,10 +102,9 @@ Implements a physically-based aperture model:
       Focal Distance = 7.5f
     </figcaption>
   </figure>
-</div>
+</p>
 
-<!-- Row 2 -->
-<div align="center" style="margin-top:12px;">
+<p align="center" style="margin-top:12px;">
   <figure style="display:inline-block; margin:0 1%; width:45%;">
     <img src="img/dof_mid.png"style="width:100%;">
     <figcaption style="text-align:center; font-style:italic; margin-top:6px;">
@@ -118,7 +117,7 @@ Implements a physically-based aperture model:
       Focal Distance = 13.5f
     </figcaption>
   </figure>
-</div>
+</p>
 
 #### Re-startable Path Tracing
 Makes long renders user-friendly (stop and continue later).
@@ -132,5 +131,6 @@ Restore film and iteration; resume without losing progress.
 Using command-line input: "filename.json --resume checkpoint.ptck"
 
 *Resuming rendering of crystal_gallery.json from iteration 1087.*
+
 <img src="img/resume.gif" width="45%" />
 
