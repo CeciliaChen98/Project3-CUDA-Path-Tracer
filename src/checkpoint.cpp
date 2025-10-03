@@ -84,8 +84,8 @@ bool ckpt::loadCheckpoint(Scene& scene, const std::string& filename)
         if (!readAll(in, &ch, sizeof(ch))) break;
 
         if (std::memcmp(ch.tag, "ACCU", 4) == 0) {
-            if (ch.byteSize != film.size() * sizeof(glm::vec3)) { std::cerr << "ACCU size mismatch\n"; return false; }
-            if (!readAll(in, film.data(), ch.byteSize)) return false;
+            if (ch.byteSize != image.size() * sizeof(glm::vec3)) { std::cerr << "ACCU size mismatch\n"; return false; }
+            if (!readAll(in, image.data(), ch.byteSize)) return false;
         }
         else {
             // Unknown chunk -> skip

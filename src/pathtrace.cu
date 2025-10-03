@@ -18,11 +18,13 @@
 #include "utilities.h"
 #include "intersections.h"
 #include "interactions.h"
+#include "random.h"
 
 #define ERRORCHECK 1
-#define MATERIALSORT 0
+#define MATERIALSORT 1
 #define STREAMCOMPACT 1
 #define RUSSIAN 1
+#define HALTON 0
 
 #define FILENAME (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #define checkCUDAError(msg) checkCUDAErrorFn(msg, FILENAME, __LINE__)
@@ -160,13 +162,16 @@ __global__ void generateRayFromCamera(Camera cam, int iter, int traceDepth, Path
 
         segment.ray.origin = cam.position;
         segment.color = glm::vec3(1.0f, 1.0f, 1.0f);
-
+#if HALTON
+       float jx = rnd::halton_rng(2, index, iter, 0);
+       float jy = rnd::halton_rng(3, index, iter, 0);
+#else
         // implement antialiasing by jittering the ray
         thrust::default_random_engine rng = makeSeededRandomEngine(iter, index, traceDepth);
         thrust::uniform_real_distribution<float> u01(0, 1);
         float jx = u01(rng);
         float jy = u01(rng);
-
+#endif
         glm::vec3 dir = glm::normalize(cam.view
             - cam.right * cam.pixelLength.x * (jx + (float)x - (float)cam.resolution.x * 0.5f)
             - cam.up * cam.pixelLength.y * (jy + (float)y - (float)cam.resolution.y * 0.5f)
@@ -181,7 +186,13 @@ __global__ void generateRayFromCamera(Camera cam, int iter, int traceDepth, Path
             if (abs(denom) > 1e-6f) {
                 float t = cam.focalDist / denom;                  
                 glm::vec3 focusP = origin + t * dir;
+#if HALTON
+                float jx = rnd::halton_rng(0, index, iter, 0);
+                float jy = rnd::halton_rng(1, index, iter, 0);
+                glm::vec3 sample = sampleUniformDiskConcentric(glm::vec2(jx,jy));
+#else
                 glm::vec3 sample = sampleUniformDiskConcentric(glm::vec2(u01(rng),u01(rng)));
+#endif
                 glm::vec3 lensOffset = (sample.x * cam.lenRadius) * cam.right
                     + (sample.y * cam.lenRadius) * cam.up;
 
@@ -281,9 +292,13 @@ __device__ void russianRoulette(PathSegment& segment,
     if (iter < rrStartDepth) return;
 
     float p = rrProbability(segment.color);
+
+#if HALTON
+    float xi = rnd::halton_rng(2, segment.pixelIndex, iter, rrStartDepth);
+#else
     thrust::uniform_real_distribution<float> u01(0, 1);
     float xi = u01(rng);         
-
+# endif
     if (xi > p) {
         segment.color = glm::vec3(0.0);
         segment.remainingBounces = 0;
@@ -319,7 +334,6 @@ __global__ void shadeFakeMaterial(
           // LOOK: this is how you use thrust's RNG! Please look at
           // makeSeededRandomEngine as well.
             thrust::default_random_engine rng = makeSeededRandomEngine(iter, idx, 0);
-            thrust::uniform_real_distribution<float> u01(0, 1);
 
             Material material = materials[intersection.materialId];
             glm::vec3 materialColor = material.color;

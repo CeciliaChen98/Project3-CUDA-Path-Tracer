@@ -15,10 +15,12 @@ A physically-based GPU path tracer written in CUDA with modern performance techn
 **Highlights:**  
 * Wave-style execution with **stream compaction** to keep only active paths.  
 * **Material sorting** to reduce warp divergence during shading.  
+* **Stochastic sampled antialiasing**
 * **Russian roulette** to terminate low-contribution paths without bias.  
 * **Depth of Field** (physically-based thin-lens camera model).  
 * A small material library: diffuse, **perfect specular, transmissive, and glass**.  
 * **Re-startable Path tracing:** checkpoint to save and restore render progress (resume later without losing samples).  
+* **Halton Sequences** (Generating Random Numbers).
 
 Test Scenes:  
 cornell.json -> default scene  
@@ -115,7 +117,8 @@ Implements a physically-based aperture model:
 
 
 #### Re-startable Path Tracing
-Makes long renders user-friendly (stop and continue later).
+Makes long renders user-friendly (stop and continue later).   
+See checkpoint.cpp and checkpoint.h.
 
 Save:  
 Film accumulation buffer (scene.image).  
@@ -129,3 +132,21 @@ Using command-line input: "filename.json --resume checkpoint.ptck"
 
 <img src="img/resume.gif" width="70%" />
 
+#### Halton Sequences
+To reduce noise and improve convergence in Monte Carlo path tracing, I implement Halton low-discrepancy sequences besides purely random numbers. A Halton sequence generates sample points that are more evenly distributed than pseudo-random samples, which reduces variance and produces cleaner images with fewer samples per pixel.
+
+See random.h
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="img/crystal.png" alt="No DOF" style="max-width:100%;"><br>
+      <em>Thrust Random Numbers</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="img/halton.png" alt="DOF near" style="max-width:100%;"><br>
+      <em>Halton Random Numbers</em>
+    </td>
+  </tr>
+
+*Though barely see the difference.*

@@ -58,6 +58,7 @@ set(headers
     src/sceneStructs.h
     src/utilities.h
     src/checkpoint.h
+    src/random.h
 )
 
 set(sources

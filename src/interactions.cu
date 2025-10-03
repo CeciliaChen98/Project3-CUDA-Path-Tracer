@@ -3,6 +3,9 @@
 #include "utilities.h"
 
 #include <thrust/random.h>
+#include "random.h"
+
+#define HALTON 0
 
 __host__ __device__ glm::vec3 sampleUniformDiskConcentric(glm::vec2 xi) {
 
@@ -75,7 +78,14 @@ __host__ __device__ void scatterRay(
     glm::vec3 wo = normalize(pathSegment.ray.direction);
     thrust::uniform_real_distribution<float> u01(0, 1);
     if (m.type == DIFFUSE) {
+#if HALTON
+        int bounce = pathSegment.remainingBounces;
+        float a = rnd::halton_rng(4 + bounce * 6, pathSegment.pixelIndex, 0, 0);
+        float b = rnd::halton_rng(5 + bounce * 6, pathSegment.pixelIndex, 0, 0);
+        glm::vec2 xi = glm::vec2(a, b);
+#else
         glm::vec2 xi = glm::vec2(u01(rng), u01(rng));
+#endif
         wi = sampleCosineHemisphere(xi);
         pdf = cosHemispherePDF(wi.z);
 
