@@ -65,6 +65,9 @@ struct Camera
     glm::vec3 right;
     glm::vec2 fov;
     glm::vec2 pixelLength;
+
+    float lenRadius = 0.0f; 
+    float focalDist = 1.0f;
 };
 
 struct RenderState
@@ -82,7 +85,6 @@ struct PathSegment
     glm::vec3 color;
     int pixelIndex;
     int remainingBounces;
-    int intersectIndex;
 };
 
 // Use with a corresponding PathSegment to do:

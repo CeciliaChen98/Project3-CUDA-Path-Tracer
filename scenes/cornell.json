@@ -27,6 +27,20 @@
             "TYPE":"Specular",
             "RGB":[0.98, 0.98, 0.98],
             "ROUGHNESS":0.0
+        },
+        "refract":
+        {
+            "TYPE":"Transmissive",
+            "RGB":[0.8, 0.8, 0.8],
+            "IOR": 1.55,
+            "REFRACTIVE": 0.6
+        },
+        "glass":
+        {
+            "TYPE":"Glass",
+            "RGB":[0.8, 0.8, 0.8],
+            "IOR": 1.55,
+            "REFRACTIVE": 0.9
         }
     },
     "Camera":

@@ -3,6 +3,7 @@
 #include "scene.h"
 #include "utilities.h"
 
+void setRestorefilm(bool enable);
 void InitDataContainer(GuiDataContainer* guiData);
 void pathtraceInit(Scene *scene);
 void pathtraceFree();

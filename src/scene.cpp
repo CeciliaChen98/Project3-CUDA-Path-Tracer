@@ -67,12 +67,20 @@ void Scene::loadFromJSON(const std::string& jsonName)
             const auto& col = p["RGB"];
             newMaterial.color = glm::vec3(col[0], col[1], col[2]);
             newMaterial.type = TRANS;
+            const auto& ior = p["IOR"];
+            newMaterial.indexOfRefraction = float(ior);
+            const auto& refractive = p["REFRACTIVE"];
+            newMaterial.hasRefractive = float(refractive);
         }
         else if (p["TYPE"] == "Glass")
         {
             const auto& col = p["RGB"];
             newMaterial.color = glm::vec3(col[0], col[1], col[2]);
             newMaterial.type = GLASS;
+            const auto& ior = p["IOR"];
+            newMaterial.indexOfRefraction = float(ior);
+            const auto& refractive = p["REFRACTIVE"];
+            newMaterial.hasRefractive = float(refractive);
         }
         MatNameToID[name] = materials.size();
         materials.emplace_back(newMaterial);
@@ -119,6 +127,14 @@ void Scene::loadFromJSON(const std::string& jsonName)
     camera.position = glm::vec3(pos[0], pos[1], pos[2]);
     camera.lookAt = glm::vec3(lookat[0], lookat[1], lookat[2]);
     camera.up = glm::vec3(up[0], up[1], up[2]);
+
+    camera.lenRadius = cameraData.contains("LEN_RADIUS")
+        ? (float)cameraData["LEN_RADIUS"]
+        : 0.0f; 
+
+    camera.focalDist = cameraData.contains("FOCAL_DIST")
+        ? (float)cameraData["FOCAL_DIST"]
+        : glm::length(camera.lookAt - camera.position);
 
     //calculate fov based on resolution
     float yscaled = tan(fovy * (PI / 180));

@@ -4,7 +4,9 @@
 #include "scene.h"
 #include "sceneStructs.h"
 #include "utilities.h"
+#include "checkpoint.h"
 
+#include <cuda.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
@@ -36,6 +38,7 @@ static double lastY;
 static bool camchanged = true;
 static float dtheta = 0, dphi = 0;
 static glm::vec3 cammove;
+static bool needsInit = false;
 
 float zoom, theta, phi;
 glm::vec3 cameraPosition;
@@ -72,6 +75,23 @@ std::string currentTimeString()
     char buf[sizeof "0000-00-00_00-00-00z"];
     strftime(buf, sizeof buf, "%Y-%m-%d_%H-%M-%Sz", gmtime(&now));
     return std::string(buf);
+}
+
+static void saveCheckpointNow() {
+    std::string filename = renderState->imageName;
+    std::ostringstream ss;
+    ss <<"../checkpoints/" << filename << "_" << iteration << "_autosave.ptck";
+    filename = ss.str();
+
+    unsigned int prev = scene->state.iterations;     
+    scene->state.iterations = iteration;                
+    if (ckpt::saveCheckpoint(*scene, filename)) {
+        std::cout << "Checkpoint saved to " << filename << " at iteration " << iteration << "\n";
+    }
+    else {
+        std::cerr << "Failed to save checkpoint to " << filename << "\n";
+    }
+    scene->state.iterations = prev;                   
 }
 
 //-------------------------------
@@ -349,16 +369,41 @@ int main(int argc, char** argv)
     }
 
     const char* sceneFile = argv[1];
+    const char* resumeFile = nullptr;
+
+    if (argc > 2) {
+        if (strcmp(argv[2], "--resume") == 0) {
+            resumeFile = argv[3];
+        }
+    }
 
     // Load scene file
     scene = new Scene(sceneFile);
-
     //Create Instance for ImGUIData
     guiData = new GuiDataContainer();
+    renderState = &scene->state;
+
+    unsigned int targetIteration = renderState->iterations;
+
+    if (resumeFile) {
+        if (!ckpt::loadCheckpoint(*scene, resumeFile)) {
+            std::cerr << "Failed to load checkpoint: " << resumeFile << "\n";
+        }
+        else {
+            iteration = scene->state.iterations;
+            printf("Resume %s at %d iteration\n", resumeFile, iteration);
+            needsInit = true;
+            scene->state.iterations = targetIteration;
+            setRestorefilm(true);
+            renderState = &scene->state;
+        }
+    }
+    else {
+        iteration = 0;
+        
+    }
 
     // Set up camera stuff from loaded path tracer settings
-    iteration = 0;
-    renderState = &scene->state;
     Camera& cam = renderState->camera;
     width = cam.resolution.x;
     height = cam.resolution.y;
@@ -422,7 +467,9 @@ void runCuda()
 {
     if (camchanged)
     {
-        iteration = 0;
+        if (!needsInit) {
+            iteration = 0;
+        }
         Camera& cam = renderState->camera;
         cameraPosition.x = zoom * sin(phi) * sin(theta);
         cameraPosition.y = zoom * cos(theta);
@@ -444,10 +491,11 @@ void runCuda()
     // Map OpenGL buffer object for writing from CUDA on a single GPU
     // No data is moved (Win & Linux). When mapped to CUDA, OpenGL should not use this buffer
 
-    if (iteration == 0)
+    if (needsInit || iteration == 0)
     {
         pathtraceFree();
         pathtraceInit(scene);
+        needsInit = false;
     }
 
     if (iteration < renderState->iterations)
@@ -488,6 +536,9 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
                 break;
             case GLFW_KEY_S:
                 saveImage();
+                break;
+            case GLFW_KEY_C:
+                saveCheckpointNow();
                 break;
             case GLFW_KEY_SPACE:
                 camchanged = true;
