@@ -89,24 +89,29 @@ Implements a physically-based aperture model:
 
 *The following images are all generated with lens of radius = 0.5.*
 
-<div align="center" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
-  <figure style="width:45%; margin:0;">
-    <img src="img/no_dof.png" style="width:100%;">
-    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">No Depth of Field</figcaption>
-  </figure>
-  <figure style="width:45%; margin:0;">
-    <img src="img/dof_near.png" style="width:100%;">
-    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">Focal Distance = 7.5f</figcaption>
-  </figure>
-  <figure style="width:45%; margin:0;">
-    <img src="img/dof_mid.png" style="width:100%;">
-    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">Focal Distance = 10.5f</figcaption>
-  </figure>
-  <figure style="width:45%; margin:0;">
-    <img src="img/dof_far.png" style="width:100%;">
-    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">Focal Distance = 14.0f</figcaption>
-  </figure>
-</div>
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="img/no_dof.png" alt="No DOF" style="max-width:100%;"><br>
+      <em>No Depth of Field</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="img/dof_near.png" alt="DOF near" style="max-width:100%;"><br>
+      <em>Focal Distance = 7.5f</em>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="img/dof_mid.png" alt="DOF mid" style="max-width:100%;"><br>
+      <em>Focal Distance = 10.5f</em>
+    </td>
+    <td align="center" width="50%">
+      <img src="img/dof_far.png" alt="DOF far" style="max-width:100%;"><br>
+      <em>Focal Distance = 14.0f</em>
+    </td>
+  </tr>
+</table>
+
 
 
 #### Re-startable Path Tracing
