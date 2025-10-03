@@ -25,7 +25,7 @@ cornell.json -> default scene
 blur.json -> depth of field
 crystal_gallary.json -> final effect  
 
-<img src="img/crystal.png" width="45%" />
+<img src="img/crystal.png" width="70%" />
 
 ---
 
@@ -89,35 +89,25 @@ Implements a physically-based aperture model:
 
 *The following images are all generated with lens of radius = 0.5.*
 
-<p align="center">
-  <figure style="display:inline-block; margin:0 1%; width:45%;">
+<div align="center" style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
+  <figure style="width:45%; margin:0;">
     <img src="img/no_dof.png" style="width:100%;">
-    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">
-      No Depth of Field
-    </figcaption>
+    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">No Depth of Field</figcaption>
   </figure>
-  <figure style="display:inline-block; margin:0 1%; width:45%;">
-    <img src="img/dof_near.png"  style="width:100%;">
-    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">
-      Focal Distance = 7.5f
-    </figcaption>
+  <figure style="width:45%; margin:0;">
+    <img src="img/dof_near.png" style="width:100%;">
+    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">Focal Distance = 7.5f</figcaption>
   </figure>
-</p>
-
-<p align="center" style="margin-top:12px;">
-  <figure style="display:inline-block; margin:0 1%; width:45%;">
-    <img src="img/dof_mid.png"style="width:100%;">
-    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">
-      Focal Distance = 10.5f
-    </figcaption>
+  <figure style="width:45%; margin:0;">
+    <img src="img/dof_mid.png" style="width:100%;">
+    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">Focal Distance = 10.5f</figcaption>
   </figure>
-  <figure style="display:inline-block; margin:0 1%; width:45%;">
+  <figure style="width:45%; margin:0;">
     <img src="img/dof_far.png" style="width:100%;">
-    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">
-      Focal Distance = 13.5f
-    </figcaption>
+    <figcaption style="text-align:center; font-style:italic; margin-top:6px;">Focal Distance = 14.0f</figcaption>
   </figure>
-</p>
+</div>
+
 
 #### Re-startable Path Tracing
 Makes long renders user-friendly (stop and continue later).
@@ -132,5 +122,5 @@ Using command-line input: "filename.json --resume checkpoint.ptck"
 
 *Resuming rendering of crystal_gallery.json from iteration 1087.*
 
-<img src="img/resume.gif" width="45%" />
+<img src="img/resume.gif" width="70%" />
 
